@@ -1,6 +1,3 @@
-install.packages(pracma)
-require(pracma)
-
 biseccion = function(f, a1, b1, tol)
 {
   if( sign(f(a1)) == sign(f(b1)) )
@@ -12,6 +9,8 @@ biseccion = function(f, a1, b1, tol)
   i = 0;
   errores = c()
   iteraciones = c()
+  Errori = c()
+  Errorj = c()
   cat(formatC(c("a","b","m1","m2","Error est."), width = -15, format = "f", flag = " "),"\n")
   
   repeat
@@ -21,20 +20,20 @@ biseccion = function(f, a1, b1, tol)
     m2 = a + 2*( b - a )/3
     if(f(m1) == 0)
     {
-        cat("Cero de la funci贸n en [",a1,",",b1,"] es: ",m1)
+      cat("Cero de la funci髇 en [",a1,",",b1,"] es: ",m1)
     }
     if(f(m2) == 0)
     {
-        cat("Cero de la funci?n en [",a1,",",b1,"] es: ",m2)  
+      cat("Cero de la funci?n en [",a1,",",b1,"] es: ",m2)  
     }
     if(sign(f(a)) != sign(f(m1)))
     {
-        b = m1
+      b = m1
     }
     else if(sign(f(m1)) != sign(f(m2)))
     {
-        a=m1
-        b=m2
+      a=m1
+      b=m2
     }
     else 
     {
@@ -44,24 +43,29 @@ biseccion = function(f, a1, b1, tol)
     estError = ( b - a ) / 2
     errores = c(errores,estError)
     iteraciones = c(iteraciones,i)
-    #Imprimir resultado de algoritmo de bisecci贸n
+    #Imprimir resultado de algoritmo de bisecci髇
     cat(formatC( c(a,b,m1,m2,estError), digits = 7, width = -15, format = "f", flag = " "), "\n")
     # Hacer update de Index (Iteraciones)
     i = i + 1
-    #Condici贸n del ciclo (Tolerancia de Error)
+    #Condici髇 del ciclo (Tolerancia de Error)
     if( estError < tol || i>1000)
     {
       m1 = a + ( b - a )/3
       m2 = a + 2*( b - a )/3
-      cat("Cero de funci贸n en [",a1,",",b1,"] aproximadamente es: ", (m2+m1)/2, " con error <=", estError, "Iteraciones: ", i,"\n Predicci?n bisecci?n: ",log((b1 - a1)/tol)/log(2))
+      cat("Cero de funci髇 en [",a1,",",b1,"] aproximadamente es: ", (m2+m1)/2, " con error <=", estError, "Iteraciones: ", i,"\n Predicci?n bisecci?n: ",log((b1 - a1)/tol)/log(2))
       break;
     }
   }
-  plot(iteraciones,errores, type = "l")
+  for(b in 1:i){
+    if(b!=i){
+      Errori[b]=errores[b]
+      Errorj[b]=errores[b+1]
+    }
+  }
+  plot(iteraciones,errores, type = "l",xlab="N iteraciones",ylab="Error")
+  plot(Errori,Errorj, type = "l", xlab ="Error i", ylab= "Error i+1")
 }
 
 f = function(x) x^3-x-1
 curve(f, -2,2); abline(h=, v=0);
 biseccion(f, 1,2, 0.000000001)
-
-
